@@ -15,7 +15,6 @@ CREATE TABLE players (
 	PRIMARY KEY (player_id),
 	player_id 	SERIAL,
 	name 		TEXT,
-	bye			BOOLEAN DEFAULT false
 );
 
 

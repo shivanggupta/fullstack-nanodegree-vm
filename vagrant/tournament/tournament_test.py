@@ -136,6 +136,4 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
-    testSixteen()
-    print "9. 16 pass"
     print "Success!  All tests pass!"
