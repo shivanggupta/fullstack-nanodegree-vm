@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Book Listings App</title>
+  <link rel="stylesheet" type='text/css'href="{{url_for('static',filename='bootstrap.min.css')}}">
+  <link rel="stylesheet" type='text/css' href="{{url_for('static',filename='shop-homepage.css')}}">
+  <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+  <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+  <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+</head>
+
+<!-- CLIENT ID MUST BE CHANGED ON LINE 58 FOR PROPER FUNCTIONING -->
+
+
+<body>  
+  <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{url_for('showGenres')}}">Book Listings App</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{{url_for('showAbout')}}">About</a>
+                    </li>
+                    <li >
+                      {%if 'username' not in session %}
+              <a class="pull-right" href="{{url_for('showLogin')}}">Login </a>
+            {% else %}
+              <a class="pull-right" href="{{url_for('gdisconnect')}}">Logout </a>
+            {% endif %}
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <p class="lead">Sign in using Google Plus</p>
+                <div id="signInButton">
+                      <span class="g-signin"
+                        data-scope="openid email"
+                        data-clientid="INSERT-CLIENT-ID-HERE.apps.googleusercontent.com"
+                        data-redirecturi="postmessage"
+                        data-accesstype="offline"
+                        data-cookiepolicy="single_host_origin"
+                        data-callback="signInCallback"
+                        >
+                      </span>
+                </div>
+                <div id="result">
+				</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; Shivang Gupta 2016</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+    <!-- jQuery -->
+    <script src="{{url_for('static', filename='jquery.js')}}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{url_for('static', filename='bootstrap.min.js')}}"></script>
+
+    <script>
+    function signInCallback(authResult) {
+      if (authResult['code']) {
+        
+        // Hide the sign-in button
+        $('#signinButton').attr('style', 'display: none');
+
+        // Send the one-time-use code to the server and check reply
+        $.ajax({
+          type: 'POST',
+          url: '/gconnect?state={{STATE}}',
+          processData: false,
+          data: authResult['code'],
+          contentType: 'application/octet-stream; charset=utf-8',
+          success: function(result) {
+            if (result) {
+              $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+              setTimeout(function() {
+              window.location.href = "/genres";
+             }, 3000);
+            }
+            else if (authResult['error']) {
+              console.log('There was an error: ' + authResult['error']);
+            }
+            else {
+            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+            }
+          }
+          
+      }); } }
+    </script>
+
+
+  </body>
+
+</html>
